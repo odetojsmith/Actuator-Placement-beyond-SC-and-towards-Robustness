@@ -1,0 +1,1 @@
+adjGO = randomGraph(40,0.10);G = graph(adjGO);p = plot(G,'layout','force')adjG = giantComponent(adjGO)save ("/Users/guobaiwei/Desktop/ControllabilityOptimization/adjG.mat", "adjG");
