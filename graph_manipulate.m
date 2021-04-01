@@ -7,4 +7,7 @@ bins = conncomp (G_big);
 p.MarkerSize = 12;
 p.NodeCData = bins;
 adj = adj_big;
+G = digraph(adj);
+bins = conncomp(G);
 save("adj_not_sc_big.mat", "adj");
+save("adj_bins.mat", "bins");
