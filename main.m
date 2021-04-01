@@ -150,6 +150,7 @@ for i = 1 : K
     inputNode_lh = [inputNode_lh new_selec];
 end
 objep_lh = obj2(siz.T,siz.Div,adjG,inputNode_lh,siz.ep);
+toc
 
 disp('*****************')
 fprintf ('\nThe set given by LHFG is:')
