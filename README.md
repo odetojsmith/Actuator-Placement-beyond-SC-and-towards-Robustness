@@ -11,9 +11,7 @@ In the final result, "objep_S0" records the objective function with epsilon deri
 
 Feel free to contact me for any queries via email.
 
-Baiwei Guo
-
-Automatic Control Laboratory, EPFL
+Baiwei Guo, Automatic Control Laboratory, EPFL
 
 E-mail: baiwei.guo@epfl.ch
 
