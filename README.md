@@ -9,3 +9,9 @@ The graph shown in Fig. 3 in the paper is encoded in "adj_not_sc_big.mat". The m
 In the final result, "objep_S0" records the objective function with epsilon derived by FG based on the initial set S_0. "objep_lh" is that derived by LHFG while "objep_sh" with a shorter horizon.
 
 
+Feel free to contact me for any queries via email.
+
+Baiwei Guo
+Automatic Control Laboratory, EPFL
+E-mail: baiwei.guo@epfl.ch
+
