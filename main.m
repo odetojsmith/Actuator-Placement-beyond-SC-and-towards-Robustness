@@ -5,13 +5,15 @@ addpath('./NetworkAnalysisTool');
 
 load adj_not_sc_big.mat
 load adj_bins.mat
+% adj(6:end,6:end) = transpose(adj(6:end,6:end));
 adjG = adj;
 
 
-K = 8;                  % Cardinality constraints  
+
+K = 9;                  % Cardinality constraints  
 ep = 1e-12;              % Epsilon
 T = 1;                  % Integration termination time
-Div = 10000;              % Integration resolution (division of the total time)
+Div = 1000;              % Integration resolution (division of the total time)
 switchM = 1;
 max_bin = max(bins);
 siz.T = T;
@@ -88,7 +90,7 @@ for i = 1 : num_no_in
     n_element_i_sc = length(sc_i);
     cost_record = [];
     for j = 1 : n_element_i_sc
-        S_0_copy = [S_0 j];
+        S_0_copy = [S_0 sc_i(j)];
         if k_expandable(inputNode, auxGSTadj, K, x_1) == 0
             cost_record = [cost_record NaN];
             continue
@@ -99,7 +101,7 @@ for i = 1 : num_no_in
     cost_min_ind = cost_min_ind(1);
     S_0 = [S_0 sc_i(cost_min_ind)];    
 end
-S_0 = s0_mani(S_0);
+n_0 = length(S_0);
 
 disp('*****************')
 fprintf ('The initial set is:')
@@ -108,7 +110,6 @@ fprintf ('% g. \n', S_0(1,end));
 
 %% Actuator Placement for Dilation-Freeness
 [inputNode_S0,objep_S0] = FGD(S_0,auxGSTadj,adjG,siz);
-S_0 = [];
 disp('*****************')
 fprintf ('The set given by FG is:')
 fprintf ('% g,', inputNode_S0(1:end-1));
@@ -124,8 +125,8 @@ warning('off','all')
 %% Long-Horizon Actuator Placement (starting from empty set)
 tic
 auxGSTadj = auxGSTadj_ori;
-inputNode_lh = [];
-for i = 1 : K
+inputNode_lh = S_0;
+for i = 1 : siz.K-n_0
     potSelection = [];
     for j = 1 : x_1
         if ismember(j,inputNode_lh) == 1
@@ -133,7 +134,7 @@ for i = 1 : K
         end
         auxGSTadj_temp = in_to_adj(auxGSTadj_ori,[inputNode_lh j],x_1);
         [valf,~] = findMaxflow(auxGSTadj_temp);
-        if valf < (siz.x_1 - siz.K + i) 
+        if valf < (siz.x_1 - siz.K + n_0 + i) 
           continue
         else
         potSelection = [potSelection j];
@@ -150,27 +151,27 @@ for i = 1 : K
     inputNode_lh = [inputNode_lh new_selec];
 end
 objep_lh = obj2(siz.T,siz.Div,adjG,inputNode_lh,siz.ep);
-toc
+
 
 disp('*****************')
-fprintf ('\nThe set given by LHFG is:')
+fprintf ('The set given by LHFG is:')
 fprintf ('% g,', inputNode_lh(1:end-1));
 fprintf ('% g. \n', inputNode_lh(end));
 fprintf ('The resulting objective is: % d.\n',objep_lh)
-
+toc
 %% LHFG with a shorter horizon
 tic
 auxGSTadj = auxGSTadj_ori;
-inputNode_sh = [];
-for i = 1 : K
+inputNode_sh = S_0;
+for i = 1 : siz.K-n_0
     potSelection = [];
-    for j = 1 : x_1
+    for j = 1 : x_1 
         if ismember(j,inputNode_sh) == 1
           continue
         end
         auxGSTadj_temp = in_to_adj(auxGSTadj_ori,[inputNode_lh j],x_1);
         [valf,~] = findMaxflow(auxGSTadj_temp);
-        if valf < (siz.x_1 - siz.K + i) 
+        if valf < (siz.x_1 - siz.K + n_0 + i) 
           continue
         else
         potSelection = [potSelection j];
@@ -188,13 +189,14 @@ for i = 1 : K
 end
 
 objep_sh = obj2(siz.T,siz.Div,adjG,inputNode_sh,siz.ep);
-toc
+
 
 disp('*****************')
-fprintf ('\n The set given by LHFG with horizon 3 is:')
+fprintf ('The set given by LHFG with horizon 3 is:')
 fprintf ('% g,', inputNode_sh(1:end-1));
 fprintf ('% g. \n', inputNode_sh(end));
-fprintf ('The resulting objective is: % d.',objep_sh)
+fprintf ('The resulting objective is: % d.\n',objep_sh)
+toc
 
 
 
